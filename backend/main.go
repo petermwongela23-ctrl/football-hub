@@ -100,8 +100,17 @@ func main() {
 		}
 	})
 
-	// Frontend static assets & SPA fallback
-	frontendDist := "../frontend/dist"
+	// Frontend static assets & SPA fallback — check Docker path first, then local
+	frontendDist := ""
+	for _, candidate := range []string{"../frontend/dist", "/app/frontend/dist", "./frontend/dist"} {
+		if _, err := os.Stat(candidate); err == nil {
+			frontendDist = candidate
+			break
+		}
+	}
+	if frontendDist == "" {
+		frontendDist = "../frontend/dist"
+	}
 	if _, err := os.Stat(frontendDist); err == nil {
 		fs := http.FileServer(http.Dir(frontendDist))
 		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
