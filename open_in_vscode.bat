@@ -1,0 +1,3 @@
+@echo off
+echo Opening Football Hub in Visual Studio Code...
+code "%~dp0"
